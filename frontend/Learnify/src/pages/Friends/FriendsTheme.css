@@ -1,0 +1,35 @@
+/*
+  Tailwind v4 reads @theme blocks and turns each --color-* variable into a
+  matching utility class (e.g. --color-primary generates bg-primary,
+  text-primary, border-primary, etc). This file is scoped to the Friends
+  page only, so it's imported directly by FriendsPage.jsx rather than from
+  the global src/index.css — it won't affect any other page's styles.
+
+  Values are taken as-is from the Stitch export's tailwind.config color
+  palette.
+*/
+@theme {
+    --color-primary: #436830;
+    --color-on-primary: #ffffff;
+    --color-primary-container: #a8d28e;
+    --color-on-primary-container: #375b24;
+
+    --color-secondary: #686004;
+    --color-secondary-container: #f1e581;
+
+    --color-tertiary: #87520c;
+
+    --color-surface: #f9f9f6;
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low: #f4f4f1;
+    --color-surface-container: #eeeeeb;
+    --color-surface-container-high: #e8e8e5;
+
+    --color-on-surface: #1a1c1b;
+    --color-on-surface-variant: #43493e;
+
+    --color-outline: #73796c;
+    --color-outline-variant: #c3c9ba;
+
+    --color-error: #ba1a1a;
+}

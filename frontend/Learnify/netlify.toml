@@ -1,0 +1,14 @@
+[build]
+  base = "frontend/Learnify"
+  command = "npm run build"
+  publish = "dist"
+
+# React Router uses client-side routing — without this, refreshing on any
+# route other than "/" (e.g. /profile, /messages) returns Netlify's own 404
+# instead of your app, because there's no actual /profile file on disk.
+# This tells Netlify to always serve index.html and let React Router take
+# over from there.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

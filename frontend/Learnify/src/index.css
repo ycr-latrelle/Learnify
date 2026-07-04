@@ -1,0 +1,18 @@
+/*
+  This is what your src/index.css should look like.
+  variables.css lives in src/styles/, so the import path needs that folder.
+*/
+
+@import "./styles/variables.css";
+@import "tailwindcss";
+
+/* Reset Vite's starter template globals — these caused the black
+   background and invisible white-on-white text */
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-page-bg);
+}

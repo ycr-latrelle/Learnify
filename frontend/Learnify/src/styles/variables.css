@@ -1,0 +1,72 @@
+/*
+  Add these to your existing src/styles/variables.css
+  (merge with whatever tokens are already in there).
+*/
+
+:root {
+  /* Color */
+  --color-forest: #3b5c2e;
+  --color-forest-dark: #24391d;
+  --color-gold: #e8de72;
+  --color-sage: #a8c96a;
+  --color-input-bg: #f1f1ea;
+  --color-page-bg: #f8f9f3;
+  --color-ink: #1e2419;
+
+  /* Type */
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", monospace;
+
+  /* Elevation */
+  --shadow-card: 0 24px 60px -12px rgba(36, 57, 29, 0.16),
+    0 8px 24px -8px rgba(36, 57, 29, 0.08);
+}
+
+/* Shared keyframes used by the auth pages (and reusable elsewhere) */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeSlideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(28px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Rhythm-bar signature motif (see components/ui/WavyLine.jsx) */
+@keyframes barPulse {
+
+  0%,
+  100% {
+    transform: scaleY(0.35);
+    opacity: 0.55;
+  }
+
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rhythm-bar {
+    animation: none !important;
+    transform: scaleY(0.75) !important;
+    opacity: 0.85 !important;
+  }
+}
