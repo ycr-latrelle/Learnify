@@ -2,7 +2,7 @@
 // [Route("api/auth")]). Comes from apiConfig.js so this points at Render in
 // production and localhost:5257 in dev without any code change.
 import { API_ROOT } from "./apiConfig";
-const API_BASE_URL = "https://learnify-rwu4.onrender.com/api/auth";
+const API_BASE_URL = `${API_ROOT}/api/auth`;
 const STORAGE_KEY = "learnify_user";
 
 async function post(endpoint, payload) {
