@@ -33,17 +33,20 @@ public class FirestoreMessagingService
     {
         var projectId = config["Firebase:ProjectId"]
             ?? throw new InvalidOperationException("Firebase:ProjectId is not configured.");
-        var credentialPath = config["Firebase:ServiceAccountPath"]
-            ?? throw new InvalidOperationException("Firebase:ServiceAccountPath is not configured.");
 
-        // Firestore (native mode, which is what Firebase projects use) is
-        // reachable with the same service-account credentials already used
-        // for Firebase Auth — no separate key needed.
-        _db = new FirestoreDbBuilder
-        {
-            ProjectId = projectId,
-            CredentialsPath = credentialPath,
-        }.Build();
+        var credentialsJson = Environment.GetEnvironmentVariable("FIREBASE_CREDENTIALS_JSON");
+        var credentialPath = config["Firebase:ServiceAccountPath"];
+
+        var builder = new FirestoreDbBuilder { ProjectId = projectId };
+
+        if (!string.IsNullOrEmpty(credentialsJson))
+            builder.JsonCredentials = credentialsJson;  // Production: from env var
+        else if (!string.IsNullOrEmpty(credentialPath))
+            builder.CredentialsPath = credentialPath;   // Local: from file
+        else
+            throw new InvalidOperationException("No Firebase credentials configured.");
+
+        _db = builder.Build();
     }
 
     // Same deterministic-id scheme either side could compute, so opening a
