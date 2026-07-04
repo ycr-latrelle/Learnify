@@ -22,13 +22,21 @@ if (!string.IsNullOrEmpty(port))
 // than in the request pipeline below.
 if (FirebaseApp.DefaultInstance == null)
 {
-    var serviceAccountPath = builder.Configuration["Firebase:ServiceAccountPath"]
-        ?? throw new InvalidOperationException("Firebase:ServiceAccountPath is not configured.");
+    var credentialsJson = Environment.GetEnvironmentVariable("FIREBASE_CREDENTIALS_JSON");
 
-    FirebaseApp.Create(new AppOptions
+    GoogleCredential credential;
+    if (!string.IsNullOrEmpty(credentialsJson))
     {
-        Credential = GoogleCredential.FromFile(serviceAccountPath)
-    });
+        credential = GoogleCredential.FromJson(credentialsJson);
+    }
+    else
+    {
+        var serviceAccountPath = builder.Configuration["Firebase:ServiceAccountPath"]
+            ?? throw new InvalidOperationException("Firebase:ServiceAccountPath is not configured.");
+        credential = GoogleCredential.FromFile(serviceAccountPath);
+    }
+
+    FirebaseApp.Create(new AppOptions { Credential = credential });
 }
 
 // Add services to the container.
