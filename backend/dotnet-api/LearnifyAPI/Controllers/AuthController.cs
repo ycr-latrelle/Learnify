@@ -79,6 +79,8 @@ public class AuthController : ControllerBase
                 email = userRecord.Email,
                 fullName = userRecord.DisplayName,
                 idToken = signIn?.IdToken,
+                refreshToken = signIn?.RefreshToken,
+                expiresIn = signIn?.ExpiresIn,
                 profile = userDetails
             });
         }
@@ -140,7 +142,68 @@ public class AuthController : ControllerBase
             uid = signIn.LocalId,
             email = signIn.Email,
             idToken = signIn.IdToken,
+            refreshToken = signIn.RefreshToken,
+            expiresIn = signIn.ExpiresIn,
             profile
+        });
+    }
+
+    public record RefreshRequest(string RefreshToken);
+
+    // POST /api/auth/refresh
+    // Firebase ID tokens expire after exactly 1 hour — this is what lets a
+    // session outlive that without forcing a re-login. The frontend calls
+    // this proactively (see authApi.js's getValidIdToken) whenever the
+    // stored token is close to expiring, using the refreshToken that came
+    // back from the original login/register.
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh([FromBody] RefreshRequest req)
+    {
+        if (string.IsNullOrWhiteSpace(req.RefreshToken))
+        {
+            return BadRequest(new { message = "Missing refresh token." });
+        }
+
+        var apiKey = _config["Firebase:WebApiKey"];
+        var url = $"https://securetoken.googleapis.com/v1/token?key={apiKey}";
+
+        var client = _httpClientFactory.CreateClient();
+
+        // This endpoint wants x-www-form-urlencoded, not JSON — unlike
+        // every other Firebase REST call this controller makes.
+        var response = await client.PostAsync(url, new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["grant_type"] = "refresh_token",
+            ["refresh_token"] = req.RefreshToken,
+        }));
+
+        var body = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            // Most common cause: the refresh token itself was revoked
+            // (password changed, account disabled, or it's just very old).
+            // Either way there's no path back to a valid session without
+            // the person logging in again.
+            Console.WriteLine($"  Firebase token refresh failed: {body}");
+            return Unauthorized(new { message = "Your session has expired. Please log in again." });
+        }
+
+        var refreshed = JsonSerializer.Deserialize<FirebaseRefreshResponseDto>(
+            body,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        if (refreshed is null || string.IsNullOrEmpty(refreshed.IdToken))
+        {
+            return StatusCode(502, new { message = "Couldn't refresh the session — unreadable response from Firebase." });
+        }
+
+        return Ok(new
+        {
+            uid = refreshed.UserId,
+            idToken = refreshed.IdToken,
+            refreshToken = refreshed.RefreshToken,
+            expiresIn = refreshed.ExpiresIn,
         });
     }
 

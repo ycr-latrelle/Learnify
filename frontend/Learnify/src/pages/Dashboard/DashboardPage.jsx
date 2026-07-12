@@ -2,9 +2,10 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getStoredToken, logoutUser } from "../../services/authApi";
 
-// Placeholder landing page — replace with the real dashboard once
-// courses / AI tutor screens are built. For now it just confirms the
-// login/register flow actually completed and a token was stored.
+// Placeholder landing page — replace with the real dashboard once the rest
+// of the core features are built. Not currently routed (App.jsx points
+// "/home" at ComingSoon instead) — kept here so there's a real component
+// to swap back in later rather than starting from scratch.
 export default function DashboardPage() {
     const navigate = useNavigate();
     const hasToken = Boolean(getStoredToken());

@@ -2,3 +2,13 @@ temp/
 *.zip
 node_modules/
 .vscode/
+
+# Python (backend/ai-service) — none of this was ignored before, and
+# backend/ai-service/ has never actually been committed. Without these,
+# the first `git add` of that folder would also commit a 60MB+ virtual
+# environment and the real OpenRouter key sitting in .env.
+venv/
+.venv/
+__pycache__/
+*.pyc
+.env

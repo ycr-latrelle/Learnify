@@ -46,6 +46,13 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<SupabaseUserService>();
 builder.Services.AddScoped<FriendService>();
 builder.Services.AddScoped<FirestoreMessagingService>();
+builder.Services.AddScoped<FirestoreTutorService>();
+builder.Services.AddScoped<FirestoreActiveRecallService>();
+// Singleton (not Scoped) on purpose: its whole job is remembering request
+// counts *across* requests. A per-request instance would reset to empty
+// every time and never actually limit anything.
+builder.Services.AddSingleton<AiRateLimiter>();
+builder.Services.AddHttpClient<AiServiceClient>();
 
 // Every request's "Authorization: Bearer <firebaseIdToken>" header is
 // verified by FirebaseAuthenticationHandler; controllers read the caller's

@@ -6,7 +6,7 @@ import {
     CalendarDays,
     MessageSquare,
     Users,
-    Bookmark,
+    Brain,
     User,
     Settings,
     ChevronsUpDown,
@@ -20,7 +20,7 @@ const NAV_ITEMS = [
     { to: "/my-sessions", label: "My Sessions", icon: CalendarDays },
     { to: "/messages", label: "Messages", icon: MessageSquare },
     { to: "/friends", label: "Friends", icon: Users },
-    { to: "/bookmarks", label: "Bookmarks", icon: Bookmark },
+    { to: "/study", label: "Study", icon: Brain },
     { to: "/profile", label: "Profile", icon: User },
 ];
 
