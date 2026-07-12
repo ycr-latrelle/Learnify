@@ -24,6 +24,7 @@ request finishes. On disk, the extracted text is never written or cached
 anywhere on this service.
 """
 
+import hmac
 import os
 
 from flask import Flask, jsonify, request
@@ -46,6 +47,27 @@ app = Flask(__name__)
 # 20MB comfortably covers a scanned-lecture-slides PDF without letting
 # someone accidentally (or deliberately) tie up the process on a huge file.
 app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024
+
+
+@app.before_request
+def require_internal_api_key():
+    # /health is exempt — Render's own health checker hits this without
+    # any custom headers, and it reveals nothing sensitive anyway.
+    if request.path == "/health":
+        return None
+
+    # If no key is configured (local dev by default), this is a no-op —
+    # see Config.INTERNAL_API_KEY's docstring. Set INTERNAL_API_KEY on
+    # both this service and the ASP.NET gateway in any environment
+    # reachable from the public internet.
+    if not Config.INTERNAL_API_KEY:
+        return None
+
+    provided = request.headers.get("X-Internal-Api-Key", "")
+    if not hmac.compare_digest(provided, Config.INTERNAL_API_KEY):
+        return jsonify({"message": "Unauthorized."}), 401
+
+    return None
 
 
 @app.get("/health")

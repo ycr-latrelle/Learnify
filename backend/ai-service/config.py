@@ -36,6 +36,18 @@ class Config:
     # turn this on.
     DEBUG = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
 
+    # Shared secret between this service and the ASP.NET gateway. This
+    # service has no Firebase auth of its own by design (ASP.NET already
+    # verified the caller before forwarding), but that assumption only
+    # holds if this service is genuinely unreachable from outside — and
+    # a public Render URL doesn't guarantee that on its own. If this is
+    # set, every request must include a matching X-Internal-Api-Key header
+    # or get rejected before touching any real logic. Left empty by
+    # default so local dev (where AiServiceClient doesn't send the header
+    # either unless configured) keeps working without extra setup — but
+    # set this in any environment reachable from the public internet.
+    INTERNAL_API_KEY = os.environ.get("INTERNAL_API_KEY", "")
+
     # --- Uploads ---
     MAX_CONTENT_LENGTH_MB = int(os.environ.get("MAX_CONTENT_LENGTH_MB", 20))
     MAX_CONTENT_LENGTH = MAX_CONTENT_LENGTH_MB * 1024 * 1024

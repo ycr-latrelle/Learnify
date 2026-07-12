@@ -120,6 +120,17 @@ public class AiServiceClient
         var baseUrl = config["AiService:BaseUrl"]
             ?? throw new InvalidOperationException("AiService:BaseUrl is not configured.");
         client.BaseAddress = new Uri(baseUrl.TrimEnd('/') + "/");
+
+        // Matches Flask's Config.INTERNAL_API_KEY / before_request check.
+        // Empty by default (local dev, matching Flask's own default) — set
+        // AiService:InternalApiKey on both services once Flask is deployed
+        // somewhere with a public URL.
+        var internalApiKey = config["AiService:InternalApiKey"];
+        if (!string.IsNullOrEmpty(internalApiKey))
+        {
+            client.DefaultRequestHeaders.Add("X-Internal-Api-Key", internalApiKey);
+        }
+
         _client = client;
     }
 
