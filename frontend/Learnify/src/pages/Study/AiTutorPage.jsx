@@ -264,7 +264,7 @@ export default function AiTutorPage() {
                             </div>
                         )}
 
-                        <form onSubmit={handleSubmit} className="p-4 md:p-6 border-t border-neutral-100 bg-white">
+                        <form onSubmit={handleSubmit} className="p-4 md:p-6 pb-[calc(1rem+72px)] md:pb-6 border-t border-neutral-100 bg-white">
                             <div className="relative flex items-center">
                                 <input
                                     type="text"
